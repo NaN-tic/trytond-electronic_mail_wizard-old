@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!-- This file is part electronic_mail_wizard module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data>
+
+        <record model="ir.ui.view" id="templateemail_start">
+            <field name="model">electronic.mail.wizard.templateemail.start</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <form string="Send Email" col="2">
+                    <label name="from_"/>
+                    <field name="from_"/>
+                    <label name="to"/>
+                    <field name="to"/>
+                    <label name="cc"/>
+                    <field name="cc"/>
+                    <label name="bcc"/>
+                    <field name="bcc"/>
+                    <label name="subject"/>
+                    <field name="subject"/>
+                    <label name="plain"/>
+                    <field name="plain"/>
+                    <separator name="total" colspan="2"/>
+                    <field name="total" colspan="2"/>
+                    <newline/>
+                    <field name="template" invisible="1"/>
+                    <field name="model" invisible="1"/>
+                </form>
+                ]]>
+            </field>
+        </record>
+
+    </data>
+</tryton>
