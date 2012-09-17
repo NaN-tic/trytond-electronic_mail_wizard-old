@@ -59,6 +59,12 @@ class GenerateTemplateEmail(Wizard):
             ])
     send = StateTransition()
 
+    def __init__(self):
+        super(GenerateTemplateEmail, self).__init__()
+        self._error_messages.update({
+            'template_missing': 'You can select a template in this wizard.',
+            })
+
     def render(self, template, record, values):
         '''Renders the template and returns as email object
         :param template: Browse Record of the template
@@ -144,6 +150,8 @@ class GenerateTemplateEmail(Wizard):
         if not len(wizards) > 0:
             return default
         wizard = wizard_obj.browse(wizards[0])
+        if not wizard.template:
+            self.raise_user_error('template_missing')
         template = wizard.template[0]
         total = len(active_ids)
 

@@ -2,6 +2,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "error:electronic_mail_wizard.example:"
+msgid "You can select a template in this wizard."
+msgstr "Seleccione una plantilla para esta acción."
+
+msgctxt "error:electronic_mail_wizard.templateemail:"
+msgid "You can select a template in this wizard."
+msgstr "Seleccione una plantilla para esta acción."
+
 msgctxt "field:electronic.mail.template,wizard:"
 msgid "Wizard"
 msgstr "Asistente"

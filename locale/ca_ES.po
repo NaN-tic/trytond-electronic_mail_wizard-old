@@ -2,6 +2,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "error:electronic_mail_wizard.example:"
+msgid "You can select a template in this wizard."
+msgstr "Selecciona una plantilla per aquesta acció."
+
+msgctxt "error:electronic_mail_wizard.templateemail:"
+msgid "You can select a template in this wizard."
+msgstr "Selecciona una plantilla per aquesta acció."
+
 msgctxt "field:electronic.mail.template,wizard:"
 msgid "Wizard"
 msgstr "Assistent"
@@ -81,6 +89,14 @@ msgstr "Inici plantilla de correu"
 msgctxt "view:electronic.mail.wizard.templateemail.start:"
 msgid "Send Email"
 msgstr "Envia correu"
+
+msgctxt "wizard_button:electronic_mail_wizard.example,start,end:"
+msgid "Cancel"
+msgstr "Cancel·lar"
+
+msgctxt "wizard_button:electronic_mail_wizard.example,start,send:"
+msgid "Send"
+msgstr "Enviar"
 
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,end:"
 msgid "Cancel"
