@@ -2,67 +2,54 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-#, fuzzy
 msgctxt "field:electronic.mail.template,wizard:"
 msgid "Wizard"
 msgstr "Assistent"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.result,id:"
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name"
 msgstr "Nom del camp"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,bcc:"
 msgid "BCC"
 msgstr "BCC"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,cc:"
 msgid "CC"
 msgstr "Fill"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,from_:"
 msgid "From"
 msgstr "De"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,id:"
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,model:"
 msgid "Model"
 msgstr "Model"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,plain:"
 msgid "Plain Text Body"
 msgstr "Cos text pla"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,sender:"
 msgid "Sender"
 msgstr "Enviat per"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,subject:"
 msgid "Subject"
 msgstr "Assumpte"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,template:"
 msgid "Template"
 msgstr "Plantilla"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,to:"
 msgid "To"
 msgstr "A"
@@ -71,12 +58,10 @@ msgctxt "field:electronic.mail.wizard.templateemail.start,total:"
 msgid "Total"
 msgstr "Total"
 
-#, fuzzy
 msgctxt "field:ir.action.wizard,template:"
 msgid "Template"
 msgstr "Plantilla"
 
-#, fuzzy
 msgctxt "help:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name of Header Field"
 msgstr "Nom camp capçalera"
@@ -93,17 +78,14 @@ msgctxt "model:electronic.mail.wizard.templateemail.start,name:"
 msgid "Template Email Start"
 msgstr "Inici plantilla de correu"
 
-#, fuzzy
 msgctxt "view:electronic.mail.wizard.templateemail.start:"
 msgid "Send Email"
 msgstr "Envia correu"
 
-#, fuzzy
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,end:"
 msgid "Cancel"
 msgstr "Cancel·lar"
 
-#, fuzzy
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,send:"
 msgid "Send"
 msgstr "Enviar"
