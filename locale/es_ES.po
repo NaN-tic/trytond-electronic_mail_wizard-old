@@ -2,67 +2,54 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-#, fuzzy
 msgctxt "field:electronic.mail.template,wizard:"
 msgid "Wizard"
 msgstr "Asistente"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.result,id:"
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name"
 msgstr "Nombre"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,bcc:"
 msgid "BCC"
 msgstr "BCC"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,cc:"
 msgid "CC"
 msgstr "CC"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,from_:"
 msgid "From"
 msgstr "De"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,id:"
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,model:"
 msgid "Model"
 msgstr "Modelo"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,plain:"
 msgid "Plain Text Body"
 msgstr "Texto plano cuerpo"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,sender:"
 msgid "Sender"
 msgstr "Enviado desde"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,subject:"
 msgid "Subject"
 msgstr "Asunto"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,template:"
 msgid "Template"
 msgstr "Plantilla"
 
-#, fuzzy
 msgctxt "field:electronic.mail.wizard.templateemail.start,to:"
 msgid "To"
 msgstr "A"
@@ -71,12 +58,10 @@ msgctxt "field:electronic.mail.wizard.templateemail.start,total:"
 msgid "Total"
 msgstr "Total"
 
-#, fuzzy
 msgctxt "field:ir.action.wizard,template:"
 msgid "Template"
 msgstr "Plantilla"
 
-#, fuzzy
 msgctxt "help:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name of Header Field"
 msgstr "Nombre del campo de la cabezera"
@@ -93,32 +78,26 @@ msgctxt "model:electronic.mail.wizard.templateemail.start,name:"
 msgid "Template Email Start"
 msgstr "Inicio plantilla correo"
 
-#, fuzzy
 msgctxt "view:electronic.mail.wizard.templateemail.result:"
 msgid "VAT Information Exchange System Results"
 msgstr "Resultado del sistema de intercambio de información VAT"
 
-#, fuzzy
 msgctxt "view:electronic.mail.wizard.templateemail.start:"
 msgid "Send Email"
 msgstr "Enviar correo"
 
-#, fuzzy
 msgctxt "wizard_button:electronic_mail_wizard.example,start,end:"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#, fuzzy
 msgctxt "wizard_button:electronic_mail_wizard.example,start,send:"
 msgid "Send"
 msgstr "Enviar"
 
-#, fuzzy
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,end:"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#, fuzzy
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,send:"
 msgid "Send"
 msgstr "Enviar"
