@@ -10,6 +10,8 @@ def register():
     Pool.register(
         TemplateEmailStart,
         TemplateEmailResult,
+        ActionWizard,
+        Template,
         module='electronic_mail_wizard', type_='model')
     Pool.register(
         GenerateTemplateEmail,

@@ -67,8 +67,8 @@ class GenerateTemplateEmail(Wizard):
 
     def render(self, template, record, values):
         '''Renders the template and returns as email object
-        :param template: Browse Record of the template
-        :param record: Browse Record of the template
+        :param template: Object of the template
+        :param record: Object of the template
         :param values: Dicctionary values
         :return: 'email.message.Message' instance
         '''
@@ -82,7 +82,7 @@ class GenerateTemplateEmail(Wizard):
             language = Template.eval(template, template.language, record)
 
         with Transaction().set_context(language = language):
-            template = Template.browse(template.id)
+            template = Template(template.id)
 
             message['from_'] = Template.eval(template, values['from_'], record)
             message['to'] = Template.eval(template, values['to'], record)
@@ -118,7 +118,7 @@ class GenerateTemplateEmail(Wizard):
             plain = Template.eval(template, values['plain'], record)
             if template.signature:
                 User = Pool().get('res.user')
-                user = User.browse(Transaction().user)
+                user = User(Transaction().user)
                 if user.signature:
                     signature = user.signature.encode("ASCII", 'ignore')
                     plain = '%s\n--\n%s' % (plain, signature)
@@ -148,7 +148,7 @@ class GenerateTemplateEmail(Wizard):
         wizards = Wizard.search(['wiz_name','=',name])
         if not len(wizards) > 0:
             return default
-        wizard = Wizard.browse(wizards[0])
+        wizard = Wizard(wizards[0])
         if not wizard.template:
             self.raise_user_error('template_missing')
         template = wizard.template[0]
@@ -165,7 +165,7 @@ class GenerateTemplateEmail(Wizard):
             default['subject'] = template.subject
             default['plain'] = template.plain
         else: #show fields with rendered tags
-            record = Pool().get(template.model.model).browse(active_ids[0]) 
+            record = Pool().get(template.model.model)(active_ids[0]) 
             default['to'] = Template.eval(template, template.to, record)
             default['cc'] = Template.eval(template, template.cc, record)
             default['bcc'] = Template.eval(template, template.bcc, record)
@@ -181,7 +181,7 @@ class GenerateTemplateEmail(Wizard):
         model = self.start.model
 
         for active_id in Transaction().context.get('active_ids'):
-            record = Pool().get(model.model).browse(active_id)
+            record = Pool().get(model.model)(active_id)
             values = {}
             values['from_'] = self.start.from_
             values['to'] = self.start.to
@@ -204,7 +204,7 @@ class ExampleGenerateTemplateEmail(GenerateTemplateEmail):
     __name__ = "electronic_mail_wizard.example"
 
     def default_start(self, fields):
-        default = self.render_fields(self._name)
+        default = self.render_fields(self.__name__)
         return default
 
     def transition_send(self):
