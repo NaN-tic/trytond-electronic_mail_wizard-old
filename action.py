@@ -11,4 +11,3 @@ class ActionWizard:
     __name__ = 'ir.action.wizard'
 
     template = fields.One2Many("electronic.mail.template", 'wizard', 'Template')
-

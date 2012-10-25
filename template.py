@@ -12,4 +12,3 @@ class Template:
     __name__ = 'electronic.mail.template'
 
     wizard = fields.Many2One("ir.action.wizard", 'Wizard')
-
