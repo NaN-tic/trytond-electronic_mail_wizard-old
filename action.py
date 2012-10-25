@@ -4,9 +4,10 @@
 
 from trytond.model import ModelView, ModelSQL, fields
 
+__all__ = ['ActionWizard']
+
 class ActionWizard(ModelSQL, ModelView):
-    _name = 'ir.action.wizard'
+    __name__ = 'ir.action.wizard'
 
     template = fields.One2Many("electronic.mail.template", 'wizard', 'Template')
 
-ActionWizard()

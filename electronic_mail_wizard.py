@@ -19,10 +19,12 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.transaction import Transaction
 from trytond.pool import Pool
 
+__all__ = ['TemplateEmailStart', 'TemplateEmailResult',
+    'GenerateTemplateEmail', 'ExampleGenerateTemplateEmail']
+
 class TemplateEmailStart(ModelView):
     'Template Email Start'
-    _name = 'electronic.mail.wizard.templateemail.start'
-    _description = __doc__
+    __name__ = 'electronic.mail.wizard.templateemail.start'
 
     from_ = fields.Char('From', readonly=True)
     sender = fields.Char('Sender', required=True)
@@ -37,20 +39,17 @@ class TemplateEmailStart(ModelView):
     model = fields.Many2One(
         'ir.model', 'Model', required=True, select="1")
 
-TemplateEmailStart()
 
 class TemplateEmailResult(ModelView):
     'Template Email Result'
-    _name = 'electronic.mail.wizard.templateemail.result'
-    _description = __doc__
+    __name__ = 'electronic.mail.wizard.templateemail.result'
 
     name = fields.Char('Name', help='Name of Header Field')
 
-TemplateEmailResult()
 
 class GenerateTemplateEmail(Wizard):
     "Generate Email from template"
-    _name = "electronic_mail_wizard.templateemail"
+    __name__ = "electronic_mail_wizard.templateemail"
 
     start = StateView('electronic.mail.wizard.templateemail.start',
         'electronic_mail_wizard.templateemail_start', [
@@ -59,9 +58,10 @@ class GenerateTemplateEmail(Wizard):
             ])
     send = StateTransition()
 
-    def __init__(self):
-        super(GenerateTemplateEmail, self).__init__()
-        self._error_messages.update({
+    @classmethod
+    def __setup__(cls):
+        super(GenerateTemplateEmail, cls).__setup__()
+        cls._error_messages.update({
             'template_missing': 'You can select a template in this wizard.',
             })
 
@@ -72,33 +72,33 @@ class GenerateTemplateEmail(Wizard):
         :param values: Dicctionary values
         :return: 'email.message.Message' instance
         '''
-        template_obj = Pool().get('electronic.mail.template')
+        Template = Pool().get('electronic.mail.template')
 
         message = MIMEMultipart('alternative')
         message['date'] = formatdate(localtime=1)
 
         language = Transaction().context.get('language', 'en_US')
         if template.language:
-            language = template_obj.eval(template, template.language, record)
+            language = Template.eval(template, template.language, record)
 
         with Transaction().set_context(language = language):
-            template = template_obj.browse(template.id)
+            template = Template.browse(template.id)
 
-            message['from_'] = template_obj.eval(template, values['from_'], record)
-            message['to'] = template_obj.eval(template, values['to'], record)
-            message['cc'] = template_obj.eval(template, values['cc'], record)
-            message['bcc'] = template_obj.eval(template, values['bcc'], record)
-            message['subject'] = template_obj.eval(template, values['subject'], record)
+            message['from_'] = Template.eval(template, values['from_'], record)
+            message['to'] = Template.eval(template, values['to'], record)
+            message['cc'] = Template.eval(template, values['cc'], record)
+            message['bcc'] = Template.eval(template, values['bcc'], record)
+            message['subject'] = Template.eval(template, values['subject'], record)
 
             # Attach reports
             if template.reports:
-                reports = template_obj.render_reports(
+                reports = Template.render_reports(
                     template, record
                     )
                 for report in reports:
                     ext, data, filename, file_name = report[0:5]
                     if file_name:
-                        filename = template_obj.eval(template, file_name, record)
+                        filename = Template.eval(template, file_name, record)
                     filename = ext and '%s.%s' % (filename, ext) or filename
                     content_type, _ = mimetypes.guess_type(filename)
                     maintype, subtype = (
@@ -115,10 +115,10 @@ class GenerateTemplateEmail(Wizard):
                     message.attach(attachment)
 
             # HTML & Text Alternate parts
-            plain = template_obj.eval(template, values['plain'], record)
+            plain = Template.eval(template, values['plain'], record)
             if template.signature:
-                user_obj = Pool().get('res.user')
-                user = user_obj.browse(Transaction().user)
+                User = Pool().get('res.user')
+                user = User.browse(Transaction().user)
                 if user.signature:
                     signature = user.signature.encode("ASCII", 'ignore')
                     plain = '%s\n--\n%s' % (plain, signature)
@@ -132,7 +132,6 @@ class GenerateTemplateEmail(Wizard):
                     header.name,
                     unicode(self.eval(template, header.value, record))
                 )
-
         return message
 
     def render_fields(self, name):
@@ -142,14 +141,14 @@ class GenerateTemplateEmail(Wizard):
         '''
         default = {}
 
-        wizard_obj = Pool().get('ir.action.wizard')
-        template_obj = Pool().get('electronic.mail.template')
+        Wizard = Pool().get('ir.action.wizard')
+        Template = Pool().get('electronic.mail.template')
         active_ids = Transaction().context.get('active_ids')
 
-        wizards = wizard_obj.search(['wiz_name','=',name])
+        wizards = Wizard.search(['wiz_name','=',name])
         if not len(wizards) > 0:
             return default
-        wizard = wizard_obj.browse(wizards[0])
+        wizard = Wizard.browse(wizards[0])
         if not wizard.template:
             self.raise_user_error('template_missing')
         template = wizard.template[0]
@@ -167,51 +166,47 @@ class GenerateTemplateEmail(Wizard):
             default['plain'] = template.plain
         else: #show fields with rendered tags
             record = Pool().get(template.model.model).browse(active_ids[0]) 
-            default['to'] = template_obj.eval(template, template.to, record)
-            default['cc'] = template_obj.eval(template, template.cc, record)
-            default['bcc'] = template_obj.eval(template, template.bcc, record)
-            default['subject'] = template_obj.eval(template, template.subject, record)
-            default['plain'] = template_obj.eval(template, template.plain, record)
+            default['to'] = Template.eval(template, template.to, record)
+            default['cc'] = Template.eval(template, template.cc, record)
+            default['bcc'] = Template.eval(template, template.bcc, record)
+            default['subject'] = Template.eval(template, template.subject, record)
+            default['plain'] = Template.eval(template, template.plain, record)
         return default
 
-    def render_and_send(self, session):
-        email_obj = Pool().get('electronic.mail')
-        template_obj = Pool().get('electronic.mail.template')
+    def render_and_send(self):
+        Email = Pool().get('electronic.mail')
+        Template = Pool().get('electronic.mail.template')
 
-        template = session.start.template
-        model = session.start.model
+        template = self.start.template
+        model = self.start.model
 
         for active_id in Transaction().context.get('active_ids'):
             record = Pool().get(model.model).browse(active_id)
             values = {}
-            values['from_'] = session.start.from_
-            values['to'] = session.start.to
-            values['cc'] = session.start.cc
-            values['bcc'] = session.start.bcc
-            values['subject'] = session.start.subject
-            values['plain'] = session.start.plain
+            values['from_'] = self.start.from_
+            values['to'] = self.start.to
+            values['cc'] = self.start.cc
+            values['bcc'] = self.start.bcc
+            values['subject'] = self.start.subject
+            values['plain'] = self.start.plain
             
             email_message = self.render(template, record, values)
-            email_id = email_obj.create_from_email(
+            email_id = Email.create_from_email(
                 email_message, template.mailbox.id)
-            template_obj.send_email(email_id, template)
+            Template.send_email(email_id, template)
 
             Pool().get('electronic.mail.template').add_event(template, record, email_id, email_message) #add event
-
         return True
 
-GenerateTemplateEmail()
 
 class ExampleGenerateTemplateEmail(GenerateTemplateEmail):
     "Example Wizard to Generate Email from template"
-    _name = "electronic_mail_wizard.example"
+    __name__ = "electronic_mail_wizard.example"
 
-    def default_start(self, session, fields):
+    def default_start(self, fields):
         default = self.render_fields(self._name)
         return default
 
-    def transition_send(self, session):
-        self.render_and_send(session)
+    def transition_send(self):
+        self.render_and_send()
         return 'end'
-
-ExampleGenerateTemplateEmail()

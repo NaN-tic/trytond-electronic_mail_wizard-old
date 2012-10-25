@@ -3,7 +3,6 @@
 The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
 <tryton>
     <data>
-
         <record model="ir.ui.view" id="templateemail_start">
             <field name="model">electronic.mail.wizard.templateemail.start</field>
             <field name="type">form</field>
@@ -31,6 +30,5 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
                 ]]>
             </field>
         </record>
-
     </data>
 </tryton>
