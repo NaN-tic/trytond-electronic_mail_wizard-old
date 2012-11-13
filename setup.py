@@ -27,20 +27,20 @@ for dep in info.get('depends', []):
 requires.append('trytond >= %s.%s, < %s.%s' %
         (major_version, minor_version, major_version, minor_version + 1))
 
-setup(name='trytond_electronic_mail_wizard',
+setup(name='trytonzz_electronic_mail_wizard',
     version=info.get('version', '0.0.1'),
     description='Tryton module to add wizard in template mails',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
-    download_url="https://bitbucket.org/zikzakmedia/trytond-electronic_mail_wizard",
-    package_dir={'trytond.modules.electronic_mail_wizard': '.'},
+    download_url="https://bitbucket.org/zikzakmedia/trytonzz-electronic_mail_wizard",
+    package_dir={'trytonzz.modules.electronic_mail_wizard': '.'},
     packages=[
-        'trytond.modules.electronic_mail_wizard',
-        'trytond.modules.electronic_mail_wizard.tests',
+        'trytonzz.modules.electronic_mail_wizard',
+        'trytonzz.modules.electronic_mail_wizard.tests',
     ],
     package_data={
-        'trytond.modules.electronic_mail_wizard': info.get('xml', []) \
+        'trytonzz.modules.electronic_mail_wizard': info.get('xml', []) \
             + ['tryton.cfg', 'locale/*.po'],
     },
     classifiers=[
@@ -63,9 +63,9 @@ setup(name='trytond_electronic_mail_wizard',
     install_requires=requires,
     zip_safe=False,
     entry_points="""
-    [trytond.modules]
-    electronic_mail_wizard = trytond.modules.electronic_mail_wizard
+    [trytonzz.modules]
+    electronic_mail_wizard = trytonzz.modules.electronic_mail_wizard
     """,
     test_suite='tests',
-    test_loader='trytond.test_loader:Loader',
+    test_loader='trytonzz.test_loader:Loader',
 )
