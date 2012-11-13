@@ -33,14 +33,14 @@ setup(name='trytonzz_electronic_mail_wizard',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
-    download_url="https://bitbucket.org/zikzakmedia/trytonzz-electronic_mail_wizard",
-    package_dir={'trytonzz.modules.electronic_mail_wizard': '.'},
+    download_url="https://bitbucket.org/zikzakmedia/trytond-electronic_mail_wizard",
+    package_dir={'trytond.modules.electronic_mail_wizard': '.'},
     packages=[
-        'trytonzz.modules.electronic_mail_wizard',
-        'trytonzz.modules.electronic_mail_wizard.tests',
+        'trytond.modules.electronic_mail_wizard',
+        'trytond.modules.electronic_mail_wizard.tests',
     ],
     package_data={
-        'trytonzz.modules.electronic_mail_wizard': info.get('xml', []) \
+        'trytond.modules.electronic_mail_wizard': info.get('xml', []) \
             + ['tryton.cfg', 'locale/*.po'],
     },
     classifiers=[
@@ -63,9 +63,9 @@ setup(name='trytonzz_electronic_mail_wizard',
     install_requires=requires,
     zip_safe=False,
     entry_points="""
-    [trytonzz.modules]
-    electronic_mail_wizard = trytonzz.modules.electronic_mail_wizard
+    [trytond.modules]
+    electronic_mail_wizard = trytond.modules.electronic_mail_wizard
     """,
     test_suite='tests',
-    test_loader='trytonzz.test_loader:Loader',
+    test_loader='trytond.test_loader:Loader',
 )
