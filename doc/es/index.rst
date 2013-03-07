@@ -2,10 +2,10 @@
 Asistente de correo electrónico
 ===============================
 
-Este módulo permite relacionar asistentes con plantillas de correo electrónico.
-Es un módulo genérico para que otros módulos usen su API. Para obtener
-asistentes por defecto debe instalar el módulo `Correos Electrónicos para PyMEs
- <../electronic_mail_pyme/index.html>`_
+Permite relacionar asistentes con plantillas de correo electrónico. Es un módulo
+genérico para que otros módulos usen su API. Para obtener asistentes por defecto
+debe instalar el módulo `Correos Electrónicos para PyMEs
+<../electronic_mail_pyme/index.html>`_
 
 Configuración
 =============
@@ -14,6 +14,7 @@ Cuando añada un nuevo asistente deberá añadir en su módulo personalizado una
 nueva clase. Por ejemplo
 
 .. code:: python
+
     class ExampleGenerateTemplateEmail(GenerateTemplateEmail):
         "Example Wizard to Generate Email from template"
         _name = "electronic_mail_wizard.example"
@@ -38,6 +39,7 @@ Los ficheros XML's puede definirlos en su propio módulo, asi no deberá crearlo
 a mano. Por ejemplo:
 
 .. code::
+
     <record model="ir.action.wizard" id="wizard_emailtemplate_party">
         <field name="name">Email Party</field>
         <field name="wiz_name">electronic_mail_wizard.party</field>
@@ -57,8 +59,8 @@ con el asistente en el apartado **Avanzado** de su plantilla.
           los botones de la cabezera se encuentran en memória para ir más
           rápido en las aperturas de las vistas.
 
-Módulos que dependen
-====================
+Módulos de los que depende
+==========================
 
 Instalados
 ----------
