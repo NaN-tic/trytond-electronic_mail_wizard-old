@@ -1,10 +1,6 @@
 #This file is part electronic_mail_wizard module for Tryton.
 #The COPYRIGHT file at the top level of this repository contains 
 #the full copyright notices and license terms.
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 import mimetypes
 import base64
 import re
@@ -13,7 +9,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.utils import formatdate
 
-from trytond.model import ModelView, ModelSQL, fields
+from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.transaction import Transaction
 from trytond.pool import Pool
