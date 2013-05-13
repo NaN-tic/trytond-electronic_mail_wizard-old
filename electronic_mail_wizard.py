@@ -1,5 +1,5 @@
 #This file is part electronic_mail_wizard module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains 
+#The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 import mimetypes
 import base64
@@ -101,7 +101,7 @@ class GenerateTemplateEmail(Wizard):
                         ).split('/', 1)
 
                     attachment = MIMEBase(maintype, subtype)
-                    attachment.set_payload(base64.b64encode(data)) 
+                    attachment.set_payload(base64.b64encode(data))
 
                     attachment.add_header(
                         'Content-Disposition', 'attachment', filename=filename)
@@ -160,7 +160,7 @@ class GenerateTemplateEmail(Wizard):
             default['subject'] = template.subject
             default['plain'] = template.plain
         else: #show fields with rendered tags
-            record = Pool().get(template.model.model)(active_ids[0]) 
+            record = Pool().get(template.model.model)(active_ids[0])
             default['to'] = Template.eval(template, template.to, record)
             default['cc'] = Template.eval(template, template.cc, record)
             default['bcc'] = Template.eval(template, template.bcc, record)
@@ -184,7 +184,7 @@ class GenerateTemplateEmail(Wizard):
             values['bcc'] = self.start.bcc
             values['subject'] = self.start.subject
             values['plain'] = self.start.plain
-            
+
             email_message = self.render(template, record, values)
             email_id = Email.create_from_email(
                 email_message, template.mailbox.id)
