@@ -79,7 +79,7 @@ class GenerateTemplateEmail(Wizard):
         with Transaction().set_context(language = language):
             template = Template(template.id)
 
-            message['from_'] = Template.eval(template, values['from_'], record)
+            message['from'] = Template.eval(template, values['from_'], record)
             message['to'] = Template.eval(template, values['to'], record)
             message['cc'] = Template.eval(template, values['cc'], record)
             message['bcc'] = Template.eval(template, values['bcc'], record)
