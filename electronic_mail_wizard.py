@@ -125,7 +125,7 @@ class GenerateTemplateEmail(Wizard):
             for header in template.headers:
                 message.add_header(
                     header.name,
-                    unicode(self.eval(template, header.value, record))
+                    unicode(Template.eval(template, header.value, record))
                 )
         return message
 
