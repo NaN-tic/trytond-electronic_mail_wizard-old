@@ -8,6 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.utils import formatdate
+from email import Encoders
 
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
@@ -101,8 +102,8 @@ class GenerateTemplateEmail(Wizard):
                         ).split('/', 1)
 
                     attachment = MIMEBase(maintype, subtype)
-                    attachment.set_payload(base64.b64encode(data))
-
+                    attachment.set_payload(data)
+                    Encoders.encode_base64(attachment)
                     attachment.add_header(
                         'Content-Disposition', 'attachment', filename=filename)
                     attachment.add_header(
