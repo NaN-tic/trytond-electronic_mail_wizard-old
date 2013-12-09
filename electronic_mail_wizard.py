@@ -2,13 +2,13 @@
 #The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 import mimetypes
-import base64
 import re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.utils import formatdate
 from email import Encoders
+from email.header import Header
 
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
@@ -84,7 +84,7 @@ class GenerateTemplateEmail(Wizard):
             message['to'] = Template.eval(template, values['to'], record)
             message['cc'] = Template.eval(template, values['cc'], record)
             message['bcc'] = Template.eval(template, values['bcc'], record)
-            message['subject'] = Template.eval(template, values['subject'], record)
+            message['subject'] = Header(Template.eval(template, values['subject'], record), 'utf-8')
 
             # Attach reports
             if template.reports:
@@ -119,8 +119,8 @@ class GenerateTemplateEmail(Wizard):
                     signature = user.signature.encode("ASCII", 'ignore')
                     plain = '%s\n--\n%s' % (plain, signature)
             html = re.sub('\n', '<br/>', plain) #html body email as same as plain but \n replaced by <br/>
-            message.attach(MIMEText(plain, 'plain'))
-            message.attach(MIMEText(html, 'html'))
+            message.attach(MIMEText(plain, _charset='utf-8'))
+            message.attach(MIMEText(html, _charset='utf-8'))
 
             # Add headers
             for header in template.headers:
