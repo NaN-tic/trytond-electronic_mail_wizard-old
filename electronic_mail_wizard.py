@@ -122,12 +122,6 @@ class GenerateTemplateEmail(Wizard):
             message.attach(MIMEText(plain, _charset='utf-8'))
             message.attach(MIMEText(html, _charset='utf-8'))
 
-            # Add headers
-            for header in template.headers:
-                message.add_header(
-                    header.name,
-                    unicode(Template.eval(template, header.value, record))
-                )
         return message
 
     def render_fields(self, name):
