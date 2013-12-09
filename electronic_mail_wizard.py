@@ -110,7 +110,6 @@ class GenerateTemplateEmail(Wizard):
                         'Content-Transfer-Encoding', 'base64')
                     message.attach(attachment)
 
-            # HTML & Text Alternate parts
             plain = Template.eval(template, values['plain'], record)
             if template.signature:
                 User = Pool().get('res.user')
@@ -118,9 +117,7 @@ class GenerateTemplateEmail(Wizard):
                 if user.signature:
                     signature = user.signature.encode("ASCII", 'ignore')
                     plain = '%s\n--\n%s' % (plain, signature)
-            html = re.sub('\n', '<br/>', plain) #html body email as same as plain but \n replaced by <br/>
             message.attach(MIMEText(plain, _charset='utf-8'))
-            message.attach(MIMEText(html, _charset='utf-8'))
 
         return message
 
