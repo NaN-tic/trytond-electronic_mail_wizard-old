@@ -14,9 +14,12 @@ from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.transaction import Transaction
 from trytond.pool import Pool
+import threading
+import logging
 
 __all__ = ['TemplateEmailStart', 'TemplateEmailResult',
     'GenerateTemplateEmail', 'ExampleGenerateTemplateEmail']
+
 
 class TemplateEmailStart(ModelView):
     'Template Email Start'
@@ -161,14 +164,10 @@ class GenerateTemplateEmail(Wizard):
         return default
 
     def render_and_send(self):
-        Email = Pool().get('electronic.mail')
-        Template = Pool().get('electronic.mail.template')
-
         template = self.start.template
-        model = self.start.model
+        #~ model = self.start.model
 
         for active_id in Transaction().context.get('active_ids'):
-            record = Pool().get(model.model)(active_id)
             values = {}
             values['from_'] = self.start.from_
             values['to'] = self.start.to
@@ -177,13 +176,28 @@ class GenerateTemplateEmail(Wizard):
             values['subject'] = self.start.subject
             values['plain'] = self.start.plain
 
+            db_name = Transaction().cursor.dbname
+            thread1 = threading.Thread(target=self.render_and_send_thread, 
+                args=(db_name, Transaction().user, template, active_id, values,))
+            thread1.start()
+
+    def render_and_send_thread(self, db_name, user, template, active_id, values):
+        with Transaction().start(db_name, user) as transaction:
+            pool = Pool()
+            Email = pool.get('electronic.mail')
+            Template = pool.get('electronic.mail.template')
+
+            template, = Template.browse([template])
+            record = Pool().get(template.model.model)(active_id)
+
             email_message = self.render(template, record, values)
             email_id = Email.create_from_email(
                 email_message, template.mailbox.id)
             Template.send_email(email_id, template)
+            logging.getLogger('Mail').info(
+                'Send template email: %s - %s' % (template.name, active_id))
 
             Pool().get('electronic.mail.template').add_event(template, record, email_id, email_message) #add event
-        return True
 
 
 class ExampleGenerateTemplateEmail(GenerateTemplateEmail):
