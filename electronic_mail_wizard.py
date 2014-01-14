@@ -70,7 +70,7 @@ class GenerateTemplateEmail(Wizard):
         '''
         Template = Pool().get('electronic.mail.template')
 
-        message = MIMEMultipart('alternative')
+        message = MIMEMultipart()
         message['date'] = formatdate(localtime=1)
 
         language = Transaction().context.get('language', 'en_US')
