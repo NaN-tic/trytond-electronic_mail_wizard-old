@@ -28,7 +28,7 @@ msgstr "BCC"
 
 msgctxt "field:electronic.mail.wizard.templateemail.start,cc:"
 msgid "CC"
-msgstr "Fill"
+msgstr "CC"
 
 msgctxt "field:electronic.mail.wizard.templateemail.start,from_:"
 msgid "From"
