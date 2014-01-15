@@ -205,6 +205,7 @@ class GenerateTemplateEmail(Wizard):
                 'Send template email: %s - %s' % (template.name, active_id))
 
             Pool().get('electronic.mail.template').add_event(template, record, email_id, email_message) #add event
+            Transaction().cursor.commit()
 
 
 class ExampleGenerateTemplateEmail(GenerateTemplateEmail):
