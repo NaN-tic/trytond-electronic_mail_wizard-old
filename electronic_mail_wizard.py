@@ -118,7 +118,7 @@ class GenerateTemplateEmail(Wizard):
                 User = Pool().get('res.user')
                 user = User(Transaction().user)
                 if user.signature:
-                    signature = user.signature.encode("ASCII", 'ignore')
+                    signature = user.signature
                     plain = '%s\n--\n%s' % (plain, signature)
             message.attach(MIMEText(plain, _charset='utf-8'))
 
