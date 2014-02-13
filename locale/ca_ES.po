@@ -2,13 +2,13 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:electronic_mail_wizard.example:"
-msgid "You can select a template in this wizard."
-msgstr "Selecciona una plantilla per aquesta acció."
-
 msgctxt "error:electronic_mail_wizard.templateemail:"
 msgid "You can select a template in this wizard."
 msgstr "Selecciona una plantilla per aquesta acció."
+
+msgctxt "field:electronic.mail.template,create_action:"
+msgid "Create Action"
+msgstr "Crea acció"
 
 msgctxt "field:electronic.mail.template,wizard:"
 msgid "Wizard"
@@ -70,6 +70,14 @@ msgctxt "field:ir.action.wizard,template:"
 msgid "Template"
 msgstr "Plantilla"
 
+msgctxt "help:electronic.mail.template,create_action:"
+msgid ""
+"If set a wizard action will be created in the related model in order to send"
+" the template."
+msgstr ""
+"Si es marca es crearà una acció al model relacionat per tal d'enviar la "
+"plantilla."
+
 msgctxt "help:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name of Header Field"
 msgstr "Nom camp capçalera"
@@ -89,14 +97,6 @@ msgstr "Inici plantilla de correu"
 msgctxt "view:electronic.mail.wizard.templateemail.start:"
 msgid "Send Email"
 msgstr "Envia correu"
-
-msgctxt "wizard_button:electronic_mail_wizard.example,start,end:"
-msgid "Cancel"
-msgstr "Cancel·lar"
-
-msgctxt "wizard_button:electronic_mail_wizard.example,start,send:"
-msgid "Send"
-msgstr "Enviar"
 
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,end:"
 msgid "Cancel"

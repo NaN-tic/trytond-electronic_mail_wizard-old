@@ -2,7 +2,6 @@
 #The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 import mimetypes
-import re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -18,7 +17,7 @@ import threading
 import logging
 
 __all__ = ['TemplateEmailStart', 'TemplateEmailResult',
-    'GenerateTemplateEmail', 'ExampleGenerateTemplateEmail']
+    'GenerateTemplateEmail', 'VirtualGenerateTemplateEmail']
 
 
 class TemplateEmailStart(ModelView):
@@ -64,6 +63,14 @@ class GenerateTemplateEmail(Wizard):
             'template_missing': 'You can select a template in this wizard.',
             })
 
+    def default_start(self, fields):
+        default = self.render_fields(self.__name__)
+        return default
+
+    def transition_send(self):
+        self.render_and_send()
+        return 'end'
+
     def render(self, template, record, values):
         '''Renders the template and returns as email object
         :param template: Object of the template
@@ -80,14 +87,15 @@ class GenerateTemplateEmail(Wizard):
         if template.language:
             language = Template.eval(template, template.language, record)
 
-        with Transaction().set_context(language = language):
+        with Transaction().set_context(language=language):
             template = Template(template.id)
 
             message['from'] = Template.eval(template, values['from_'], record)
             message['to'] = Template.eval(template, values['to'], record)
             message['cc'] = Template.eval(template, values['cc'], record)
             message['bcc'] = Template.eval(template, values['bcc'], record)
-            message['subject'] = Header(Template.eval(template, values['subject'], record), 'utf-8')
+            message['subject'] = Header(Template.eval(template,
+                    values['subject'], record), 'utf-8')
 
             # Attach reports
             if template.reports:
@@ -138,7 +146,7 @@ class GenerateTemplateEmail(Wizard):
         Template = Pool().get('electronic.mail.template')
         active_ids = Transaction().context.get('active_ids')
 
-        wizards = Wizard.search(['wiz_name','=',name])
+        wizards = Wizard.search(['wiz_name', '=', name])
         if not len(wizards) > 0:
             return default
         wizard = Wizard(wizards[0])
@@ -151,25 +159,26 @@ class GenerateTemplateEmail(Wizard):
         if template.language and total == 1:
             record = Pool().get(template.model.model)(active_ids[0])
             language = Template.eval(template, template.language, record)
-            with Transaction().set_context(language = language):
+            with Transaction().set_context(language=language):
                 template = Template(template.id)
 
         default['from_'] = template.from_
         default['total'] = total
         default['template'] = template.id
         default['model'] = template.model.id
-        if total > 1: #show fields with tags
+        if total > 1:  # show fields with tags
             default['to'] = template.to
             default['cc'] = template.cc
             default['bcc'] = template.bcc
             default['subject'] = template.subject
             default['plain'] = template.plain
-        else: #show fields with rendered tags
+        else:  # show fields with rendered tags
             record = Pool().get(template.model.model)(active_ids[0])
             default['to'] = Template.eval(template, template.to, record)
             default['cc'] = Template.eval(template, template.cc, record)
             default['bcc'] = Template.eval(template, template.bcc, record)
-            default['subject'] = Template.eval(template, template.subject, record)
+            default['subject'] = Template.eval(template, template.subject,
+                record)
             default['plain'] = Template.eval(template, template.plain, record)
         return default
 
@@ -187,11 +196,13 @@ class GenerateTemplateEmail(Wizard):
             values['plain'] = self.start.plain
 
             db_name = Transaction().cursor.dbname
-            thread1 = threading.Thread(target=self.render_and_send_thread, 
-                args=(db_name, Transaction().user, template, active_id, values,))
+            thread1 = threading.Thread(target=self.render_and_send_thread,
+                args=(db_name, Transaction().user, template, active_id,
+                    values,))
             thread1.start()
 
-    def render_and_send_thread(self, db_name, user, template, active_id, values):
+    def render_and_send_thread(self, db_name, user, template, active_id,
+            values):
         with Transaction().start(db_name, user) as transaction:
             pool = Pool()
             Email = pool.get('electronic.mail')
@@ -207,18 +218,26 @@ class GenerateTemplateEmail(Wizard):
             logging.getLogger('Mail').info(
                 'Send template email: %s - %s' % (template.name, active_id))
 
-            Pool().get('electronic.mail.template').add_event(template, record, email_id, email_message) #add event
-            Transaction().cursor.commit()
+            Pool().get('electronic.mail.template').add_event(template, record,
+                email_id, email_message)  # add event
+            transaction.cursor.commit()
 
 
-class ExampleGenerateTemplateEmail(GenerateTemplateEmail):
-    "Example Wizard to Generate Email from template"
-    __name__ = "electronic_mail_wizard.example"
+class VirtualGenerateTemplateEmail(GenerateTemplateEmail):
+    "Virtual Wizard to Generate Email from template"
+    __name__ = "electronic_mail_wizard.virtual"
 
-    def default_start(self, fields):
-        default = self.render_fields(self.__name__)
-        return default
-
-    def transition_send(self):
-        self.render_and_send()
-        return 'end'
+    @classmethod
+    def __post_setup__(cls):
+        pool = Pool()
+        Template = pool.get('electronic.mail.template')
+        super(VirtualGenerateTemplateEmail, cls).__post_setup__()
+        #Register all wizard without class
+        try:
+            for template in Template.search([
+                        ('wizard', '!=', None),
+                        ('create_action', '=', True),
+                        ]):
+                template.register_electronic_mail_wizard_class()
+        except:
+            pass

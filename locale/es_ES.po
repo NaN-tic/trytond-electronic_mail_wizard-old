@@ -2,13 +2,13 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:electronic_mail_wizard.example:"
-msgid "You can select a template in this wizard."
-msgstr "Seleccione una plantilla para esta acción."
-
 msgctxt "error:electronic_mail_wizard.templateemail:"
 msgid "You can select a template in this wizard."
 msgstr "Seleccione una plantilla para esta acción."
+
+msgctxt "field:electronic.mail.template,create_action:"
+msgid "Create Action"
+msgstr "Crear acción"
 
 msgctxt "field:electronic.mail.template,wizard:"
 msgid "Wizard"
@@ -70,6 +70,14 @@ msgctxt "field:ir.action.wizard,template:"
 msgid "Template"
 msgstr "Plantilla"
 
+msgctxt "help:electronic.mail.template,create_action:"
+msgid ""
+"If set a wizard action will be created in the related model in order to send"
+" the template."
+msgstr ""
+"Si se marca se creará una acción en el modelo relacionado para enviar la "
+"plantilla. "
+
 msgctxt "help:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name of Header Field"
 msgstr "Nombre del campo de la cabezera"
@@ -93,14 +101,6 @@ msgstr "Resultado del sistema de intercambio de información VAT"
 msgctxt "view:electronic.mail.wizard.templateemail.start:"
 msgid "Send Email"
 msgstr "Enviar correo"
-
-msgctxt "wizard_button:electronic_mail_wizard.example,start,end:"
-msgid "Cancel"
-msgstr "Cancelar"
-
-msgctxt "wizard_button:electronic_mail_wizard.example,start,send:"
-msgid "Send"
-msgstr "Enviar"
 
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,end:"
 msgid "Cancel"
