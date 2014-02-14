@@ -13,6 +13,7 @@ from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.transaction import Transaction
 from trytond.pool import Pool
+from trytond import backend
 import threading
 import logging
 
@@ -34,8 +35,7 @@ class TemplateEmailStart(ModelView):
     total = fields.Integer('Total', readonly=True,
         help='Total emails to send')
     template = fields.Many2One("electronic.mail.template", 'Template')
-    model = fields.Many2One(
-        'ir.model', 'Model', required=True, select="1")
+    model = fields.Many2One('ir.model', 'Model', required=True)
 
 
 class TemplateEmailResult(ModelView):
@@ -233,11 +233,11 @@ class VirtualGenerateTemplateEmail(GenerateTemplateEmail):
         Template = pool.get('electronic.mail.template')
         super(VirtualGenerateTemplateEmail, cls).__post_setup__()
         #Register all wizard without class
-        try:
+        TableHandler = backend.get('TableHandler')
+        table = TableHandler(Transaction().cursor, Template,
+            'electronic_mail_wizard')
+        if table.column_exist('create_action'):
             for template in Template.search([
-                        ('wizard', '!=', None),
                         ('create_action', '=', True),
                         ]):
                 template.register_electronic_mail_wizard_class()
-        except:
-            pass
