@@ -162,7 +162,7 @@ class GenerateTemplateEmail(Wizard):
             with Transaction().set_context(language=language):
                 template = Template(template.id)
 
-        default['from_'] = template.from_
+        default['from_'] = Template.eval(template, template.from_, record)
         default['total'] = total
         default['template'] = template.id
         default['model'] = template.model.id
