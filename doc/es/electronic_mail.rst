@@ -37,6 +37,8 @@ propone un formato de correo que posteriormente lo podrá editar si lo desea.
 El último paso del asistente será enviar, y se generará un correo electrónico a partir de la información
 que hemos introducido en el asistente. No generará un correo a partir de la plantilla, si no del asistente.
 
-Si en vez de seleccionar un registro decide seleccionar varios registros para enviar correo, NO se enviará
-un correo para cada uno. Su objetivo es enviar un correo igual para todos los correos que disponga en los campos
-"A", "CC" o "BBC". Por ejemplo, enviar notificaciones a clientes.
+Si en vez de seleccionar un registro decide seleccionar varios registros para enviar el correo, se enviará
+un correo para cada uno pero el contenido del asistente no se visualizará los tags con los información correspondiente.
+En el momento de enviar el correo, los tags serán canviados con la información del registro. Si edita la información
+de la plantilla y añade nuevos tags, debe de estar seguro que son correctos, ya que en caso contrario, dará error y
+el correo no se enviará (notificando al administrador).
