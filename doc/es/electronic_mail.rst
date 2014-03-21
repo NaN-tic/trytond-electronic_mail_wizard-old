@@ -40,5 +40,5 @@ que hemos introducido en el asistente. No generará un correo a partir de la pla
 Si en vez de seleccionar un registro decide seleccionar varios registros para enviar el correo, se enviará
 un correo para cada uno pero el contenido del asistente no se visualizará los tags con los información correspondiente.
 En el momento de enviar el correo, los tags serán canviados con la información del registro. Si edita la información
-de la plantilla y añade nuevos tags, debe de estar seguro que son correctos, ya que en caso contrario, dará error y
+del asistente y añade nuevos tags, debe de estar seguro que son correctos, ya que en caso contrario, dará error y
 el correo no se enviará (notificando al administrador).
