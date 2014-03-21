@@ -155,9 +155,9 @@ class GenerateTemplateEmail(Wizard):
         template = wizard.template[0]
         total = len(active_ids)
 
+        record = Pool().get(template.model.model)(active_ids[0])
         #load data in language when send a record
         if template.language and total == 1:
-            record = Pool().get(template.model.model)(active_ids[0])
             language = Template.eval(template, template.language, record)
             with Transaction().set_context(language=language):
                 template = Template(template.id)
