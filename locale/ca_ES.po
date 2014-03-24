@@ -6,6 +6,10 @@ msgctxt "error:electronic_mail_wizard.templateemail:"
 msgid "You can select a template in this wizard."
 msgstr "Selecciona una plantilla per aquesta acció."
 
+msgctxt "error:electronic_mail_wizard.virtual:"
+msgid "You can select a template in this wizard."
+msgstr "Selecciona una plantilla per aquesta acció."
+
 msgctxt "field:electronic.mail.template,create_action:"
 msgid "Create Action"
 msgstr "Crea acció"
@@ -105,3 +109,11 @@ msgstr "Cancel·lar"
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,send:"
 msgid "Send"
 msgstr "Enviar"
+
+msgctxt "wizard_button:electronic_mail_wizard.virtual,start,end:"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "wizard_button:electronic_mail_wizard.virtual,start,send:"
+msgid "Send"
+msgstr "Envia"
