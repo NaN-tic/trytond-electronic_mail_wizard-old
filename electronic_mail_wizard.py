@@ -183,6 +183,9 @@ class GenerateTemplateEmail(Wizard):
         return default
 
     def render_and_send(self):
+        pool = Pool()
+        Mail = pool.get('electronic.mail')
+
         template = self.start.template
         #~ model = self.start.model
 
@@ -194,6 +197,18 @@ class GenerateTemplateEmail(Wizard):
             values['bcc'] = self.start.bcc
             values['subject'] = self.start.subject
             values['plain'] = self.start.plain
+
+            emails = []
+            if self.start.to:
+                emails += self.start.from_.split(',')
+            if self.start.to:
+                emails += self.start.to.split(',')
+            if self.start.cc:
+                emails += self.start.cc.split(',')
+            if self.start.bcc:
+                emails += self.start.bcc.split(',')
+
+            Mail.validate_emails(emails)
 
             db_name = Transaction().cursor.dbname
             thread1 = threading.Thread(target=self.render_and_send_thread,
