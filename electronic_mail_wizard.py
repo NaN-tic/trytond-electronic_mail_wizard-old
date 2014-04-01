@@ -93,7 +93,7 @@ class GenerateTemplateEmail(Wizard):
             message['from'] = Template.eval(template, values['from_'], record)
             message['to'] = Template.eval(template, values['to'], record)
             message['cc'] = Template.eval(template, values['cc'], record)
-            message['bcc'] = Template.eval(template, values['bcc'], record)
+            #~ message['bcc'] = Template.eval(template, values['bcc'], record)
             message['subject'] = Header(Template.eval(template,
                     values['subject'], record), 'utf-8')
 
@@ -227,8 +227,13 @@ class GenerateTemplateEmail(Wizard):
             record = Pool().get(template.model.model)(active_id)
 
             email_message = self.render(template, record, values)
+
+            context = {}
+            if values.get('bcc'):
+                context['bcc'] = values.get('bcc')
+
             electronic_email = Email.create_from_email(
-                email_message, template.mailbox.id)
+                email_message, template.mailbox.id, context)
             Template.send_email(electronic_email, template)
             logging.getLogger('Mail').info(
                 'Send template email: %s - %s' % (template.name, active_id))
