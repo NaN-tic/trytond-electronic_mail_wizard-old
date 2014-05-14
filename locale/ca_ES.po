@@ -24,7 +24,7 @@ msgstr "ID"
 
 msgctxt "field:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name"
-msgstr "Nom del camp"
+msgstr "Nom"
 
 msgctxt "field:electronic.mail.wizard.templateemail.start,bcc:"
 msgid "BCC"
