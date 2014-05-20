@@ -34,21 +34,23 @@ class Template:
         return templates
 
     @classmethod
-    def write(cls, templates, values):
+    def write(cls, *args):
         pool = Pool()
         Wizard = pool.get('ir.action.wizard')
-        super(Template, cls).write(templates, values)
-        if 'create_action' in values:
-            if values['create_action']:
-                cls.create_wizards(templates)
-            else:
-                cls.delete_wizards(templates)
-        if values.get('name'):
-            wizards = [t.wizard for t in templates if t.wizard]
-            if wizards:
-                Wizard.write(wizards, {
-                        'name': values.get('name'),
-                        })
+        super(Template, cls).write(*args)
+        actions = iter(args)
+        for templates, values in zip(actions, actions):
+            if 'create_action' in values:
+                if values['create_action']:
+                    cls.create_wizards(templates)
+                else:
+                    cls.delete_wizards(templates)
+            if values.get('name'):
+                wizards = [t.wizard for t in templates if t.wizard]
+                if wizards:
+                    Wizard.write(wizards, {
+                            'name': values.get('name'),
+                            })
 
     @classmethod
     def delete(cls, templates):
