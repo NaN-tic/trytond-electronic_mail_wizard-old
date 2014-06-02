@@ -96,7 +96,8 @@ class Template:
         pool = Pool()
         Keyword = pool.get('ir.action.keyword')
         Wizard = pool.get('ir.action.wizard')
-        wizards = [t.wizard for t in templates if t.wizard and t.create_action]
+        wizards = [t.wizard for t in templates if t.wizard
+            and not t.create_action]
         if wizards:
             keywords = Keyword.search([
                     ('action', 'in', [w.action for w in wizards]),
