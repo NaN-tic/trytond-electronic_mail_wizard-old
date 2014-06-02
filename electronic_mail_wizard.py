@@ -60,7 +60,8 @@ class GenerateTemplateEmail(Wizard):
     def __setup__(cls):
         super(GenerateTemplateEmail, cls).__setup__()
         cls._error_messages.update({
-            'template_missing': 'You can select a template in this wizard.',
+            'template_deleted': 'This template has been deactivated or '
+                'deleted.',
             })
 
     def default_start(self, fields):
@@ -146,13 +147,11 @@ class GenerateTemplateEmail(Wizard):
         Template = Pool().get('electronic.mail.template')
         active_ids = Transaction().context.get('active_ids')
 
-        wizards = Wizard.search(['wiz_name', '=', name])
-        if not len(wizards) > 0:
-            return default
-        wizard = Wizard(wizards[0])
-        if not wizard.template:
-            self.raise_user_error('template_missing')
-        template = wizard.template[0]
+        context = Transaction().context
+        action_id = context.get('action_id', None)
+        wizard = Wizard(action_id)
+        template = (wizard.template and wizard.template[0]
+            or self.raise_user_error('template_deleted'))
         total = len(active_ids)
 
         record = Pool().get(template.model.model)(active_ids[0])
