@@ -85,17 +85,17 @@ class GenerateTemplateEmail(Wizard):
 
         language = Transaction().context.get('language', 'en_US')
         if template.language:
-            language = Template.eval(template, template.language, record)
+            language = template.eval(template.language, record)
 
         with Transaction().set_context(language=language):
             template = Template(template.id)
 
-            message['from'] = Template.eval(template, values['from_'], record)
-            message['to'] = Template.eval(template, values['to'], record)
-            message['cc'] = Template.eval(template, values['cc'], record)
-            #~ message['bcc'] = Template.eval(template, values['bcc'], record)
-            message['subject'] = Header(Template.eval(template,
-                    values['subject'], record), 'utf-8')
+            message['from'] = template.eval(values['from_'], record)
+            message['to'] = template.eval(values['to'], record)
+            message['cc'] = template.eval(values['cc'], record)
+            #~ message['bcc'] = template.eval(values['bcc'], record)
+            message['subject'] = Header(template.eval(values['subject'],
+                    record), 'utf-8')
 
             # Attach reports
             if template.reports:
@@ -105,7 +105,7 @@ class GenerateTemplateEmail(Wizard):
                 for report in reports:
                     ext, data, filename, file_name = report[0:5]
                     if file_name:
-                        filename = Template.eval(template, file_name, record)
+                        filename = template.eval(file_name, record)
                     filename = ext and '%s.%s' % (filename, ext) or filename
                     content_type, _ = mimetypes.guess_type(filename)
                     maintype, subtype = (
@@ -121,7 +121,7 @@ class GenerateTemplateEmail(Wizard):
                         'Content-Transfer-Encoding', 'base64')
                     message.attach(attachment)
 
-            plain = Template.eval(template, values['plain'], record)
+            plain = template.eval(values['plain'], record)
             if template.signature:
                 User = Pool().get('res.user')
                 user = User(Transaction().user)
@@ -158,11 +158,11 @@ class GenerateTemplateEmail(Wizard):
         record = Pool().get(template.model.model)(active_ids[0])
         #load data in language when send a record
         if template.language and total == 1:
-            language = Template.eval(template, template.language, record)
+            language = template.eval(template.language, record)
             with Transaction().set_context(language=language):
                 template = Template(template.id)
 
-        default['from_'] = Template.eval(template, template.from_, record)
+        default['from_'] = template.eval(template.from_, record)
         default['total'] = total
         default['template'] = template.id
         default['model'] = template.model.id
@@ -174,12 +174,12 @@ class GenerateTemplateEmail(Wizard):
             default['plain'] = template.plain
         else:  # show fields with rendered tags
             record = Pool().get(template.model.model)(active_ids[0])
-            default['to'] = Template.eval(template, template.to, record)
-            default['cc'] = Template.eval(template, template.cc, record)
-            default['bcc'] = Template.eval(template, template.bcc, record)
-            default['subject'] = Template.eval(template, template.subject,
+            default['to'] = template.eval(template.to, record)
+            default['cc'] = template.eval(template.cc, record)
+            default['bcc'] = template.eval(template.bcc, record)
+            default['subject'] = template.eval(template.subject,
                 record)
-            default['plain'] = Template.eval(template, template.plain, record)
+            default['plain'] = template.eval(template.plain, record)
         return default
 
     def render_and_send(self):
