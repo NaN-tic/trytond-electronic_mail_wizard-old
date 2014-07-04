@@ -190,6 +190,7 @@ class GenerateTemplateEmail(Wizard):
         #~ model = self.start.model
 
         for active_id in Transaction().context.get('active_ids'):
+            record = pool.get(template.model.model)(active_id)
             values = {}
             values['from_'] = self.start.from_
             values['to'] = self.start.to
@@ -200,13 +201,13 @@ class GenerateTemplateEmail(Wizard):
 
             emails = []
             if self.start.to:
-                emails += self.start.from_.split(',')
+                emails += template.eval(self.start.from_, record).split(',')
             if self.start.to:
-                emails += self.start.to.split(',')
+                emails += template.eval(self.start.to, record).split(',')
             if self.start.cc:
-                emails += self.start.cc.split(',')
+                emails += template.eval(self.start.cc, record).split(',')
             if self.start.bcc:
-                emails += self.start.bcc.split(',')
+                emails += template.eval(self.start.bcc, record).split(',')
 
             Mail.validate_emails(emails)
 
