@@ -3,12 +3,12 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:electronic_mail_wizard.templateemail:"
-msgid "You can select a template in this wizard."
-msgstr "Selecciona una plantilla per aquesta acció."
+msgid "This template has been deactivated or deleted."
+msgstr "Aquesta plantilla està desactivada o eliminada."
 
 msgctxt "error:electronic_mail_wizard.virtual:"
-msgid "You can select a template in this wizard."
-msgstr "Selecciona una plantilla per aquesta acció."
+msgid "This template has been deactivated or deleted."
+msgstr "Aquesta plantilla està desactivada o eliminada."
 
 msgctxt "field:electronic.mail.template,create_action:"
 msgid "Create Action"
@@ -41,10 +41,6 @@ msgstr "De"
 msgctxt "field:electronic.mail.wizard.templateemail.start,id:"
 msgid "ID"
 msgstr "ID"
-
-msgctxt "field:electronic.mail.wizard.templateemail.start,model:"
-msgid "Model"
-msgstr "Model"
 
 msgctxt "field:electronic.mail.wizard.templateemail.start,plain:"
 msgid "Plain Text Body"
