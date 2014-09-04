@@ -5,7 +5,7 @@ import mimetypes
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
-from email.utils import formatdate
+from email.utils import formatdate, make_msgid
 from email import Encoders
 from email.header import Header
 
@@ -89,7 +89,8 @@ class GenerateTemplateEmail(Wizard):
 
         with Transaction().set_context(language=language):
             template = Template(template.id)
-
+            if template.create_message_id:
+                message['message_id'] = make_msgid()
             message['from'] = template.eval(values['from_'], record)
             message['to'] = template.eval(values['to'], record)
             message['cc'] = template.eval(values['cc'], record)

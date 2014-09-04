@@ -13,7 +13,6 @@ __metaclass__ = PoolMeta
 
 class Template:
     __name__ = 'electronic.mail.template'
-
     create_action = fields.Boolean('Create Action', help='If set a wizard '
         'action will be created in the related model in order to send the '
         'template.')
