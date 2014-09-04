@@ -35,7 +35,6 @@ class TemplateEmailStart(ModelView):
     total = fields.Integer('Total', readonly=True,
         help='Total emails to send')
     template = fields.Many2One("electronic.mail.template", 'Template')
-    model = fields.Many2One('ir.model', 'Model', required=True)
 
 
 class TemplateEmailResult(ModelView):
@@ -164,7 +163,6 @@ class GenerateTemplateEmail(Wizard):
         default['from_'] = template.eval(template.from_, record)
         default['total'] = total
         default['template'] = template.id
-        default['model'] = template.model.id
         if total > 1:  # show fields with tags
             default['to'] = template.to
             default['cc'] = template.cc
@@ -186,7 +184,6 @@ class GenerateTemplateEmail(Wizard):
         Mail = pool.get('electronic.mail')
 
         template = self.start.template
-        #~ model = self.start.model
 
         for active_id in Transaction().context.get('active_ids'):
             record = pool.get(template.model.model)(active_id)

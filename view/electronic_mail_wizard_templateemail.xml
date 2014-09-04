@@ -18,5 +18,4 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
     <field name="total" colspan="2"/>
     <newline/>
     <field name="template" invisible="1"/>
-    <field name="model" invisible="1"/>
 </form>
