@@ -118,8 +118,6 @@ class GenerateTemplateEmail(Wizard):
                     Encoders.encode_base64(attachment)
                     attachment.add_header(
                         'Content-Disposition', 'attachment', filename=filename)
-                    attachment.add_header(
-                        'Content-Transfer-Encoding', 'base64')
                     message.attach(attachment)
 
             plain = template.eval(values['plain'], record)
