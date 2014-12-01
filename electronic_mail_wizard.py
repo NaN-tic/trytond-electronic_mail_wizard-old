@@ -98,6 +98,11 @@ class GenerateTemplateEmail(Wizard):
             message['subject'] = Header(template.eval(values['subject'],
                     record), 'utf-8')
 
+            if template.reply_to:
+                eval_result = template.eval(template.reply_to, record)
+                if eval_result:
+                    message['reply-to'] = eval_result
+
             # Attach reports
             if template.reports:
                 reports = Template.render_reports(
