@@ -105,9 +105,7 @@ class GenerateTemplateEmail(Wizard):
 
             # Attach reports
             if template.reports:
-                reports = Template.render_reports(
-                    template, record
-                    )
+                reports = template.render_reports(record)
                 for report in reports:
                     ext, data, filename, file_name = report[0:5]
                     if file_name:
