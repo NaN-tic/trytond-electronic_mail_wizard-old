@@ -30,20 +30,33 @@ class TemplateEmailStart(ModelView):
     to = fields.Char('To', required=True)
     cc = fields.Char('CC')
     bcc = fields.Char('BCC')
-    subject = fields.Char('Subject', required=True)
-    plain = fields.Text('Plain Text Body', required=True)
+    subject = fields.Char('Subject', required=True,
+        states={
+            'readonly': ~Eval('single', True),
+        }, depends=['single'])
+    plain = fields.Text('Plain Text Body', required=True,
+        states={
+            'readonly': ~Eval('single', True),
+        }, depends=['single'])
     send_html = fields.Boolean('Send HTML',
         help='Send email with text and html')
     html = fields.Text('HTML Text Body',
         states={
             'invisible': ~Eval('send_html', True),
             'required': Eval('send_html', True),
-        }, depends=['send_html'])
+            'readonly': ~Eval('single', True),
+        }, depends=['send_html', 'single'])
     total = fields.Integer('Total', readonly=True,
         help='Total emails to send')
     message_id = fields.Char('Message-ID')
     in_reply_to = fields.Char('In Repply To')
     template = fields.Many2One("electronic.mail.template", 'Template')
+    single = fields.Boolean('Single Email',
+        help='Single Email')
+
+    @staticmethod
+    def default_single():
+        return True
 
 
 class TemplateEmailResult(ModelView):
@@ -175,8 +188,9 @@ class GenerateTemplateEmail(Wizard):
         '''
         default = {}
 
-        Wizard = Pool().get('ir.action.wizard')
-        Template = Pool().get('electronic.mail.template')
+        pool = Pool()
+        Wizard = pool.get('ir.action.wizard')
+        Template = pool.get('electronic.mail.template')
         active_ids = Transaction().context.get('active_ids')
 
         context = Transaction().context
@@ -195,6 +209,7 @@ class GenerateTemplateEmail(Wizard):
 
         default['from_'] = template.eval(template.from_, record)
         default['total'] = total
+        default['single'] = False if total > 1 else True
         default['template'] = template.id
         if total > 1:  # show fields with tags
             default['message_id'] = template.message_id
@@ -222,10 +237,14 @@ class GenerateTemplateEmail(Wizard):
     def render_and_send(self):
         pool = Pool()
         Mail = pool.get('electronic.mail')
+        Template = pool.get('electronic.mail.template')
 
         template = self.start.template
 
-        for active_id in Transaction().context.get('active_ids'):
+        active_ids = Transaction().context.get('active_ids')
+        total = len(active_ids)
+
+        for active_id in active_ids:
             record = pool.get(template.model.model)(active_id)
             values = {}
             values['message_id'] = self.start.message_id
@@ -235,10 +254,19 @@ class GenerateTemplateEmail(Wizard):
             values['to'] = self.start.to
             values['cc'] = self.start.cc
             values['bcc'] = self.start.bcc
-            values['subject'] = self.start.subject
-            values['plain'] = self.start.plain
             values['send_html'] = self.start.send_html
-            values['html'] = self.start.html
+
+            if total > 1 and template.language: # multi emails by language
+                language = template.eval(template.language, record)
+                with Transaction().set_context(language=language):
+                    template = Template(template.id)
+                values['subject'] = template.eval(template.subject, record)
+                values['plain'] = template.eval(template.plain, record)
+                values['html'] = template.eval(template.html, record)
+            else: # a single email
+                values['subject'] = self.start.subject
+                values['plain'] = self.start.plain
+                values['html'] = self.start.html
 
             emails = []
             if self.start.from_:
