@@ -126,17 +126,16 @@ class GenerateTemplateEmail(Wizard):
                 if template.signature:
                     html = '%s<br>--<br>%s' % (html,
                         signature.replace('\n', '<br>'))
-                header = """
+                html = """
                     <html>
                     <head><head>
                     <body>
-                    """
-                footer = """
+                    %s
                     </body>
                     </html>
-                    """
-                html = "%s%s%s" % (header, html, footer)
+                    """ % html
 
+            # MIME HTML or Text
             if send_html:
                 body = MIMEMultipart('alternative')
                 body.attach(MIMEText(plain, 'plain', _charset='utf-8'))
