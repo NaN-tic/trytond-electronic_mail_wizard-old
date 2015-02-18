@@ -62,6 +62,10 @@ msgctxt "field:electronic.mail.wizard.templateemail.start,sender:"
 msgid "Sender"
 msgstr "Enviado desde"
 
+msgctxt "field:electronic.mail.wizard.templateemail.start,single:"
+msgid "Single Email"
+msgstr "Email único"
+
 msgctxt "field:electronic.mail.wizard.templateemail.start,subject:"
 msgid "Subject"
 msgstr "Asunto"
@@ -97,6 +101,10 @@ msgstr "Nombre del campo de la cabezera"
 msgctxt "help:electronic.mail.wizard.templateemail.start,send_html:"
 msgid "Send email with text and html"
 msgstr "Enviar correo formato texto y HTML"
+
+msgctxt "help:electronic.mail.wizard.templateemail.start,single:"
+msgid "Send Single Email"
+msgstr "Envio email único"
 
 msgctxt "help:electronic.mail.wizard.templateemail.start,total:"
 msgid "Total emails to send"

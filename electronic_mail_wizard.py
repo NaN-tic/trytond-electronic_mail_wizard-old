@@ -52,7 +52,7 @@ class TemplateEmailStart(ModelView):
     in_reply_to = fields.Char('In Repply To')
     template = fields.Many2One("electronic.mail.template", 'Template')
     single = fields.Boolean('Single Email',
-        help='Single Email')
+        help='Send Single Email')
 
     @staticmethod
     def default_single():
