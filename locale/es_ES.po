@@ -6,10 +6,6 @@ msgctxt "error:electronic_mail_wizard.templateemail:"
 msgid "This template has been deactivated or deleted."
 msgstr "Esta plantilla está desactivada o elimada."
 
-msgctxt "error:electronic_mail_wizard.virtual:"
-msgid "This template has been deactivated or deleted."
-msgstr "Esta plantilla está desactivada o elimada."
-
 msgctxt "field:electronic.mail.template,create_action:"
 msgid "Create Action"
 msgstr "Crear acción"
@@ -38,13 +34,29 @@ msgctxt "field:electronic.mail.wizard.templateemail.start,from_:"
 msgid "From"
 msgstr "De"
 
+msgctxt "field:electronic.mail.wizard.templateemail.start,html:"
+msgid "HTML Text Body"
+msgstr "Mensaje HTML"
+
 msgctxt "field:electronic.mail.wizard.templateemail.start,id:"
 msgid "ID"
 msgstr "ID"
 
+msgctxt "field:electronic.mail.wizard.templateemail.start,in_reply_to:"
+msgid "In Repply To"
+msgstr "En respuesta a"
+
+msgctxt "field:electronic.mail.wizard.templateemail.start,message_id:"
+msgid "Message-ID"
+msgstr "Mensaje-ID"
+
 msgctxt "field:electronic.mail.wizard.templateemail.start,plain:"
 msgid "Plain Text Body"
 msgstr "Texto plano cuerpo"
+
+msgctxt "field:electronic.mail.wizard.templateemail.start,send_html:"
+msgid "Send HTML"
+msgstr "Enviar HTML"
 
 msgctxt "field:electronic.mail.wizard.templateemail.start,sender:"
 msgid "Sender"
@@ -82,6 +94,10 @@ msgctxt "help:electronic.mail.wizard.templateemail.result,name:"
 msgid "Name of Header Field"
 msgstr "Nombre del campo de la cabezera"
 
+msgctxt "help:electronic.mail.wizard.templateemail.start,send_html:"
+msgid "Send email with text and html"
+msgstr "Enviar correo formato texto y HTML"
+
 msgctxt "help:electronic.mail.wizard.templateemail.start,total:"
 msgid "Total emails to send"
 msgstr "Total correos a enviar"
@@ -99,6 +115,14 @@ msgid "VAT Information Exchange System Results"
 msgstr "Resultado del sistema de intercambio de información VAT"
 
 msgctxt "view:electronic.mail.wizard.templateemail.start:"
+msgid "HTML"
+msgstr "HTML"
+
+msgctxt "view:electronic.mail.wizard.templateemail.start:"
+msgid "Plain"
+msgstr "Texto"
+
+msgctxt "view:electronic.mail.wizard.templateemail.start:"
 msgid "Send Email"
 msgstr "Enviar correo"
 
@@ -107,13 +131,5 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 msgctxt "wizard_button:electronic_mail_wizard.templateemail,start,send:"
-msgid "Send"
-msgstr "Enviar"
-
-msgctxt "wizard_button:electronic_mail_wizard.virtual,start,end:"
-msgid "Cancel"
-msgstr "Cancelar"
-
-msgctxt "wizard_button:electronic_mail_wizard.virtual,start,send:"
 msgid "Send"
 msgstr "Enviar"
