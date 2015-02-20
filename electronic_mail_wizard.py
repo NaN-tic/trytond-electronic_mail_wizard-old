@@ -16,6 +16,7 @@ from trytond.pool import Pool
 from trytond.pyson import Eval
 import threading
 import logging
+from time import sleep
 
 __all__ = ['TemplateEmailStart', 'TemplateEmailResult',
     'GenerateTemplateEmail']
@@ -278,36 +279,38 @@ class GenerateTemplateEmail(Wizard):
             if self.start.bcc:
                 emails += template.eval(self.start.bcc, record).split(',')
 
-            Mail.validate_emails(emails)
-
-            db_name = Transaction().cursor.dbname
-            thread1 = threading.Thread(target=self.render_and_send_thread,
-                args=(db_name, Transaction().user, template, active_id,
-                    values,))
-            thread1.start()
-
-    def render_and_send_thread(self, db_name, user, template, active_id,
-            values):
-        with Transaction().start(db_name, user) as transaction:
-            pool = Pool()
-            Email = pool.get('electronic.mail')
-            Template = pool.get('electronic.mail.template')
-
-            template, = Template.browse([template])
-            record = Pool().get(template.model.model)(active_id)
-
             email_message = self.render(template, record, values)
 
             context = {}
             if values.get('bcc'):
                 context['bcc'] = values.get('bcc')
 
-            electronic_email = Email.create_from_email(
+            electronic_email = Mail.create_from_email(
                 email_message, template.mailbox.id, context)
-            Template.send_email(electronic_email, template)
-            logging.getLogger('Mail').info(
-                'Send template email: %s - %s' % (template.name, active_id))
 
-            Pool().get('electronic.mail.template').add_event(template, record,
-                electronic_email, email_message)  # add event
+            db_name = Transaction().cursor.dbname
+            thread1 = threading.Thread(target=self.render_and_send_thread,
+                args=(db_name, Transaction().user, template, active_id,
+                    electronic_email,))
+            thread1.start()
+
+    def render_and_send_thread(self, db_name, user, template, active_id,
+            electronic_email):
+        with Transaction().start(db_name, user) as transaction:
+            pool = Pool()
+            Email = pool.get('electronic.mail')
+            Template = pool.get('electronic.mail.template')
+            sleep(5)
+            electronic_email = Email(electronic_email)
+
+            template, = Template.browse([template])
+            record = Pool().get(template.model.model)(active_id)
+            success = electronic_email.send_email()
+            if success:
+                logging.getLogger('Mail').info('Send template email: %s - %s' %
+                    (template.name, active_id))
+            else:
+                electronic_email.mailbox = template.draft_mailbox
+
+            template.add_event(record, electronic_email)  # add event
             transaction.cursor.commit()
