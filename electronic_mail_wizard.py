@@ -239,6 +239,10 @@ class GenerateTemplateEmail(Wizard):
         pool = Pool()
         Mail = pool.get('electronic.mail')
         Template = pool.get('electronic.mail.template')
+        EmailConfiguration = pool.get('electronic.mail.configuration')
+        email_configuration = EmailConfiguration(1)
+        mailbox = email_configuration.outbox
+        company_id = Transaction().context.get('company')
 
         template = self.start.template
 
@@ -285,21 +289,25 @@ class GenerateTemplateEmail(Wizard):
             if values.get('bcc'):
                 context['bcc'] = values.get('bcc')
 
-            electronic_email = Mail.create_from_email(
-                email_message, template.mailbox.id, context)
+            electronic_email = Mail.create_from_email(email_message,
+                mailbox.id, context)
 
             db_name = Transaction().cursor.dbname
             thread1 = threading.Thread(target=self.render_and_send_thread,
                 args=(db_name, Transaction().user, template, active_id,
-                    electronic_email,))
+                    electronic_email, company_id))
             thread1.start()
 
     def render_and_send_thread(self, db_name, user, template, active_id,
-            electronic_email):
+            electronic_email, company_id):
         with Transaction().start(db_name, user) as transaction:
             pool = Pool()
             Email = pool.get('electronic.mail')
             Template = pool.get('electronic.mail.template')
+            EmailConfiguration = pool.get('electronic.mail.configuration')
+            with transaction.set_context(company=company_id):
+                email_configuration = EmailConfiguration(1)
+            draft_mailbox = email_configuration.draft
             sleep(5)
             electronic_email = Email(electronic_email)
 
@@ -310,7 +318,7 @@ class GenerateTemplateEmail(Wizard):
                 logging.getLogger('Mail').info('Send template email: %s - %s' %
                     (template.name, active_id))
             else:
-                electronic_email.mailbox = template.draft_mailbox
+                electronic_email.mailbox = draft_mailbox
 
             template.add_event(record, electronic_email)  # add event
             transaction.cursor.commit()
