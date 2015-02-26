@@ -30,4 +30,6 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
     <field name="message_id" invisible="1"/>
     <field name="in_reply_to" invisible="1"/>
     <field name="single" invisible="1"/>
+    <label name="queue"/>
+    <field name="queue"/>
 </form>

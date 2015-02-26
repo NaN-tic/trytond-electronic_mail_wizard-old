@@ -54,6 +54,9 @@ class TemplateEmailStart(ModelView):
     template = fields.Many2One("electronic.mail.template", 'Template')
     single = fields.Boolean('Single Email',
         help='Send Single Email')
+    queue = fields.Boolean('Queue',
+        help='Put these messages in the output mailbox instead of sending '
+            'them immediately.')
 
     @staticmethod
     def default_single():
@@ -241,10 +244,13 @@ class GenerateTemplateEmail(Wizard):
         Template = pool.get('electronic.mail.template')
         EmailConfiguration = pool.get('electronic.mail.configuration')
         email_configuration = EmailConfiguration(1)
-        mailbox = email_configuration.outbox
         company_id = Transaction().context.get('company')
 
         template = self.start.template
+        if self.start.queue:
+            mailbox = email_configuration.outbox
+        else:
+            mailbox = email_configuration.sent
 
         active_ids = Transaction().context.get('active_ids')
         total = len(active_ids)
@@ -292,11 +298,12 @@ class GenerateTemplateEmail(Wizard):
             electronic_email = Mail.create_from_email(email_message,
                 mailbox.id, context)
 
-            db_name = Transaction().cursor.dbname
-            thread1 = threading.Thread(target=self.render_and_send_thread,
-                args=(db_name, Transaction().user, template, active_id,
-                    electronic_email, company_id))
-            thread1.start()
+            if not self.start.queue:
+                db_name = Transaction().cursor.dbname
+                thread1 = threading.Thread(target=self.render_and_send_thread,
+                    args=(db_name, Transaction().user, template, active_id,
+                        electronic_email, company_id))
+                thread1.start()
 
     def render_and_send_thread(self, db_name, user, template, active_id,
             electronic_email, company_id):
