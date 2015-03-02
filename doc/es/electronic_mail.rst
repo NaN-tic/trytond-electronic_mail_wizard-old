@@ -47,3 +47,6 @@ un correo para cada uno pero el contenido del asistente no se visualizará los t
 En el momento de enviar el correo, los tags serán canviados con la información del registro. Si edita la información
 del asistente y añade nuevos tags, debe de estar seguro que son correctos, ya que en caso contrario, dará error y
 el correo no se enviará (notificando al administrador).
+
+Si selecciona la opción de "Colas" el correo no se enviará en el momento de renderizar el correo. Estará
+disponible al buzón de salida y se enviará según la configuración de la acción planificada.
