@@ -35,7 +35,12 @@ En el asistente podrá editar el cuerpo del mensaje, como la descripción o remi
 propone un formato de correo que posteriormente lo podrá editar si lo desea.
 
 El último paso del asistente será enviar, y se generará un correo electrónico a partir de la información
-que hemos introducido en el asistente. No generará un correo a partir de la plantilla, si no del asistente.
+que hemos introducido en el asistente. No se genera un correo a partir de la plantilla, si no a partir
+de los datos disponibles en el asistente execpto si la selección son varios registros y varios idiomas.
+
+En el caso que la selección sean varios registros pero disponen del mismo idioma, el asunto,
+el cuerpo de texto y html no se renderizarán pero será editable en el asistent. Si los registros
+seleccionados son de varios idiomas, estos no podrán editarse en el asistente.
 
 Si en vez de seleccionar un registro decide seleccionar varios registros para enviar el correo, se enviará
 un correo para cada uno pero el contenido del asistente no se visualizará los tags con los información correspondiente.
