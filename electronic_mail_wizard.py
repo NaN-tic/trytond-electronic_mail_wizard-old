@@ -244,7 +244,6 @@ class GenerateTemplateEmail(Wizard):
         Template = pool.get('electronic.mail.template')
         EmailConfiguration = pool.get('electronic.mail.configuration')
         email_configuration = EmailConfiguration(1)
-        company_id = Transaction().context.get('company')
 
         template = self.start.template
         if self.start.queue:
@@ -297,35 +296,40 @@ class GenerateTemplateEmail(Wizard):
 
             electronic_email = Mail.create_from_email(email_message,
                 mailbox.id, context)
+            Transaction().cursor.commit()
 
             if not self.start.queue:
                 db_name = Transaction().cursor.dbname
+                context = Transaction().context
                 thread1 = threading.Thread(target=self.render_and_send_thread,
                     args=(db_name, Transaction().user, template, active_id,
-                        electronic_email, company_id))
+                        electronic_email.id, context))
                 thread1.start()
 
     def render_and_send_thread(self, db_name, user, template, active_id,
-            electronic_email, company_id):
+            electronic_email_id, context):
         with Transaction().start(db_name, user) as transaction:
             pool = Pool()
             Email = pool.get('electronic.mail')
             Template = pool.get('electronic.mail.template')
             EmailConfiguration = pool.get('electronic.mail.configuration')
-            with transaction.set_context(company=company_id):
+
+            with transaction.set_context(context):
                 email_configuration = EmailConfiguration(1)
-            draft_mailbox = email_configuration.draft
-            sleep(5)
-            electronic_email = Email(electronic_email)
+                draft_mailbox = email_configuration.draft
 
-            template, = Template.browse([template])
-            record = Pool().get(template.model.model)(active_id)
-            success = electronic_email.send_email()
-            if success:
-                logging.getLogger('Mail').info('Send template email: %s - %s' %
-                    (template.name, active_id))
-            else:
-                electronic_email.mailbox = draft_mailbox
+                sleep(5)
 
-            template.add_event(record, electronic_email)  # add event
-            transaction.cursor.commit()
+                electronic_email = Email(electronic_email_id)
+                template, = Template.browse([template])
+                record = Pool().get(template.model.model)(active_id)
+
+                success = electronic_email.send_email()
+                if success:
+                    logging.getLogger('Mail').info('Send template email: %s - %s' %
+                        (template.name, active_id))
+                else:
+                    electronic_email.mailbox = draft_mailbox
+
+                template.add_event(record, electronic_email)  # add event
+                transaction.cursor.commit()
