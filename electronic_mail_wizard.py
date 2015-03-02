@@ -214,6 +214,7 @@ class GenerateTemplateEmail(Wizard):
         default['from_'] = template.eval(template.from_, record)
         default['total'] = total
         default['single'] = False if total > 1 else True
+        default['queue'] = True if template.queue else False
         default['template'] = template.id
         if total > 1:  # show fields with tags
             default['message_id'] = template.message_id

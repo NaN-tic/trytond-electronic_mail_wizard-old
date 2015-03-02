@@ -22,6 +22,10 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <newline/>
             <field name="html" colspan="6"/>
         </page>
+        <page string="Advanced" id="advanced">
+            <label name="queue"/>
+            <field name="queue"/>
+        </page>
     </notebook>
     <separator name="total" colspan="2"/>
     <field name="total" colspan="2"/>
@@ -30,6 +34,4 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
     <field name="message_id" invisible="1"/>
     <field name="in_reply_to" invisible="1"/>
     <field name="single" invisible="1"/>
-    <label name="queue"/>
-    <field name="queue"/>
 </form>
