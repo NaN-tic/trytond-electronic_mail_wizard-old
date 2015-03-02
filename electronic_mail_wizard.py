@@ -33,34 +33,34 @@ class TemplateEmailStart(ModelView):
     bcc = fields.Char('BCC')
     subject = fields.Char('Subject', required=True,
         states={
-            'readonly': ~Eval('single', True),
-        }, depends=['single'])
+            'readonly': Eval('multi_lang', True),
+        }, depends=['multi_lang'])
     plain = fields.Text('Plain Text Body', required=True,
         states={
-            'readonly': ~Eval('single', True),
-        }, depends=['single'])
+            'readonly': Eval('multi_lang', True),
+        }, depends=['multi_lang'])
     send_html = fields.Boolean('Send HTML',
         help='Send email with text and html')
     html = fields.Text('HTML Text Body',
         states={
             'invisible': ~Eval('send_html', True),
             'required': Eval('send_html', True),
-            'readonly': ~Eval('single', True),
-        }, depends=['send_html', 'single'])
+            'readonly': Eval('multi_lang', True),
+        }, depends=['send_html', 'multi_lang'])
     total = fields.Integer('Total', readonly=True,
         help='Total emails to send')
     message_id = fields.Char('Message-ID')
     in_reply_to = fields.Char('In Repply To')
     template = fields.Many2One("electronic.mail.template", 'Template')
-    single = fields.Boolean('Single Email',
-        help='Send Single Email')
+    multi_lang = fields.Boolean('Multi Lang',
+        help='Email records have multi languages.')
     queue = fields.Boolean('Queue',
         help='Put these messages in the output mailbox instead of sending '
             'them immediately.')
 
     @staticmethod
-    def default_single():
-        return True
+    def default_multi_lang():
+        return False
 
 
 class TemplateEmailResult(ModelView):
@@ -202,21 +202,30 @@ class GenerateTemplateEmail(Wizard):
         wizard = Wizard(action_id)
         template = (wizard.template and wizard.template[0]
             or self.raise_user_error('template_deleted'))
+
         total = len(active_ids)
+        records = Pool().get(template.model.model).browse(active_ids)
 
-        record = Pool().get(template.model.model)(active_ids[0])
-        #load data in language when send a record
-        if template.language and total == 1:
-            language = template.eval(template.language, record)
-            with Transaction().set_context(language=language):
-                template = Template(template.id)
-
-        default['from_'] = template.eval(template.from_, record)
+        # Control how many language records are selected
+        langs = set()
+        if template.language:
+            for record in records:
+                lang = template.eval(template.language, record)
+                langs.add(lang)
+                if len(langs) > 1: # not continue; multi lang is True
+                    break
+            if len(langs) == 1:
+                lang, = langs
+                with Transaction().set_context(language=lang):
+                    template = Template(template.id)
+        multi_lang = True if len(langs) > 1 else False
+        
         default['total'] = total
-        default['single'] = False if total > 1 else True
+        default['multi_lang'] = multi_lang
         default['queue'] = True if template.queue else False
         default['template'] = template.id
         if total > 1:  # show fields with tags
+            default['from_'] = template.from_
             default['message_id'] = template.message_id
             default['in_reply_to'] = template.in_reply_to
             default['to'] = template.to
@@ -226,7 +235,8 @@ class GenerateTemplateEmail(Wizard):
             default['plain'] = template.plain
             default['html'] = template.html
         else:  # show fields with rendered tags
-            record = Pool().get(template.model.model)(active_ids[0])
+            record, = records
+            default['from_'] = template.eval(template.from_, record)
             default['message_id'] = template.eval(template.message_id, record)
             default['in_reply_to'] = template.eval(template.in_reply_to,
                 record)
@@ -254,9 +264,10 @@ class GenerateTemplateEmail(Wizard):
 
         active_ids = Transaction().context.get('active_ids')
         total = len(active_ids)
+        multi_lang = self.start.multi_lang
 
-        for active_id in active_ids:
-            record = pool.get(template.model.model)(active_id)
+        electronic_emails = set()
+        for record in pool.get(template.model.model).browse(active_ids):
             values = {}
             values['message_id'] = self.start.message_id
             if self.start.in_reply_to:
@@ -267,14 +278,26 @@ class GenerateTemplateEmail(Wizard):
             values['bcc'] = self.start.bcc
             values['send_html'] = self.start.send_html
 
-            if total > 1 and template.language: # multi emails by language
+            # multi records and one language
+            if not multi_lang and total > 1:
+                values['subject'] = template.eval(self.start.subject, record)
+                values['plain'] = template.eval(self.start.plain, record)
+                values['html'] = template.eval(self.start.html, record)
+            # multiple records and multiple language
+            elif multi_lang and total > 1 and template.language:
                 language = template.eval(template.language, record)
                 with Transaction().set_context(language=language):
                     template = Template(template.id)
                 values['subject'] = template.eval(template.subject, record)
                 values['plain'] = template.eval(template.plain, record)
                 values['html'] = template.eval(template.html, record)
-            else: # a single email
+            # multiple records and multiple language and not template language
+            elif multi_lang and total > 1:
+                values['subject'] = template.eval(template.subject, record)
+                values['plain'] = template.eval(template.plain, record)
+                values['html'] = template.eval(template.html, record)
+            # a simple email
+            else:
                 values['subject'] = self.start.subject
                 values['plain'] = self.start.plain
                 values['html'] = self.start.html
@@ -297,22 +320,24 @@ class GenerateTemplateEmail(Wizard):
 
             electronic_email = Mail.create_from_email(email_message,
                 mailbox.id, context)
-            Transaction().cursor.commit()
+            template.add_event(record, electronic_email) # add event
+            electronic_emails.add(electronic_email)
 
-            if not self.start.queue:
-                db_name = Transaction().cursor.dbname
-                context = Transaction().context
-                thread1 = threading.Thread(target=self.render_and_send_thread,
-                    args=(db_name, Transaction().user, template, active_id,
-                        electronic_email.id, context))
-                thread1.start()
+        Transaction().cursor.commit()
+        if not self.start.queue:
+            electronic_email_ids = list({e.id for e in electronic_emails})
+            db_name = Transaction().cursor.dbname
+            context = Transaction().context
+            thread1 = threading.Thread(target=self.render_and_send_thread,
+                args=(db_name, Transaction().user, template,
+                    electronic_email_ids, context))
+            thread1.start()
 
-    def render_and_send_thread(self, db_name, user, template, active_id,
-            electronic_email_id, context):
+    def render_and_send_thread(self, db_name, user, template,
+            electronic_email_ids, context):
         with Transaction().start(db_name, user) as transaction:
             pool = Pool()
             Email = pool.get('electronic.mail')
-            Template = pool.get('electronic.mail.template')
             EmailConfiguration = pool.get('electronic.mail.configuration')
 
             with transaction.set_context(context):
@@ -321,16 +346,11 @@ class GenerateTemplateEmail(Wizard):
 
                 sleep(5)
 
-                electronic_email = Email(electronic_email_id)
-                template, = Template.browse([template])
-                record = Pool().get(template.model.model)(active_id)
-
-                success = electronic_email.send_email()
-                if success:
-                    logging.getLogger('Mail').info('Send template email: %s - %s' %
-                        (template.name, active_id))
-                else:
-                    electronic_email.mailbox = draft_mailbox
-
-                template.add_event(record, electronic_email)  # add event
-                transaction.cursor.commit()
+                for electronic_email in Email.browse(electronic_email_ids):
+                    success = electronic_email.send_email()
+                    if success:
+                        logging.getLogger('Mail').info('Send email: %s' %
+                            (electronic_email.rec_name))
+                    else:
+                        electronic_email.mailbox = draft_mailbox
+            transaction.cursor.commit()
