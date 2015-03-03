@@ -258,9 +258,11 @@ class GenerateTemplateEmail(Wizard):
 
         template = self.start.template
         if self.start.queue:
-            mailbox = email_configuration.outbox
+            mailbox = template.mailbox_outbox \
+                if template.mailbox_outbox else email_configuration.outbox
         else:
-            mailbox = email_configuration.sent
+            mailbox = template.mailbox if template.mailbox \
+                else email_configuration.sent
 
         active_ids = Transaction().context.get('active_ids')
         total = len(active_ids)
@@ -319,7 +321,7 @@ class GenerateTemplateEmail(Wizard):
                 context['bcc'] = values.get('bcc')
 
             electronic_email = Mail.create_from_email(email_message,
-                mailbox.id, context)
+                mailbox, context)
             template.add_event(record, electronic_email) # add event
             electronic_emails.add(electronic_email)
 
@@ -353,4 +355,6 @@ class GenerateTemplateEmail(Wizard):
                             (electronic_email.rec_name))
                     else:
                         electronic_email.mailbox = draft_mailbox
+                        electronic_email.save()
+
             transaction.cursor.commit()
