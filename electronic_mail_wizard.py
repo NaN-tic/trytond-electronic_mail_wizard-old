@@ -130,19 +130,22 @@ class GenerateTemplateEmail(Wizard):
 
             plain = template.eval(values['plain'], record)
 
+            signature_html = None
             if template.signature:
                 User = Pool().get('res.user')
                 user = User(Transaction().user)
-                signature = user.signature.encode('utf-8')
-                plain = '%s\n--\n%s' % (plain, signature)
+                if user.signature:
+                    signature = user.signature.encode('utf-8')
+                    plain = '%s\n--\n%s' % (plain, signature)
+                if user.signature_html:
+                    signature_html = user.signature_html.encode('utf-8')
 
             # HTML
             send_html = values.get('send_html')
             if send_html:
                 html = template.eval(values['html'], record)
-                if template.signature:
-                    html = '%s<br>--<br>%s' % (html,
-                        signature.replace('\n', '<br>'))
+                if template.signature and signature_html:
+                    html = '%s<br/>--<br/>%s' % (html, signature_html)
                 html = """
                     <html>
                     <head><head>
