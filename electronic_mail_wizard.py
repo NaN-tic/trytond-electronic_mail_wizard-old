@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.utils import formatdate, make_msgid
-from email import Encoders
+from email import Encoders, charset
 from email.header import Header
 
 from trytond.model import ModelView, fields
@@ -163,6 +163,7 @@ class GenerateTemplateEmail(Wizard):
                 message.attach(body)
             else:
                 message.attach(MIMEText(plain, _charset='utf-8'))
+            charset.add_charset('utf-8', charset.QP, charset.QP)
 
             # Attach reports
             if template.reports:
