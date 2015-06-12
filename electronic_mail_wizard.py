@@ -14,6 +14,8 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.pyson import Eval
+from trytond.modules.electronic_mail_template.template import styles_dir
+
 import threading
 import logging
 from time import sleep
@@ -146,14 +148,28 @@ class GenerateTemplateEmail(Wizard):
                 html = template.eval(values['html'], record)
                 if template.signature and signature_html:
                     html = '%s<br/>--<br/>%s' % (html, signature_html)
+
+                style = ''
+                if template.style:
+                    fname = '%s/%s' % (styles_dir(), template.style)
+                    with open(fname) as f:
+                        style = f.read()
+                    if template.custom_style:
+                        style += '\n%s' % template.custom_style
+                elif template.custom_style:
+                    style = '%s' % template.custom_style
+
                 html = """
                     <html>
                     <head><head>
+                    <style>
+                    %s
+                    </style>
                     <body>
                     %s
                     </body>
                     </html>
-                    """ % html
+                    """ % (style, html)
 
             # MIME HTML or Text
             if send_html:
