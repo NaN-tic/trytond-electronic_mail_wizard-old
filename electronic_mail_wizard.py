@@ -342,6 +342,8 @@ class GenerateTemplateEmail(Wizard):
 
             electronic_email = Mail.create_from_email(email_message,
                 mailbox, context)
+            if not electronic_email: # not configured mailbox
+                return
             template.add_event(record, electronic_email) # add event
             electronic_emails.add(electronic_email)
 
