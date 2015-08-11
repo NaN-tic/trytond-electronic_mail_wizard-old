@@ -1,27 +1,27 @@
 # This file is part electronic_mail_wizard module for Tryton.
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
-import mimetypes
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.utils import formatdate, make_msgid
 from email import Encoders, charset
 from email.header import Header
-
+from time import sleep
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.pyson import Eval
 from trytond.modules.electronic_mail_template.template import styles_dir
-
 import threading
 import logging
-from time import sleep
+import mimetypes
 
 __all__ = ['TemplateEmailStart', 'TemplateEmailResult',
     'GenerateTemplateEmail']
+
+logger = logging.getLogger(__name__)
 
 
 class TemplateEmailStart(ModelView):
@@ -373,8 +373,7 @@ class GenerateTemplateEmail(Wizard):
                 for electronic_email in Email.browse(electronic_email_ids):
                     success = electronic_email.send_email()
                     if success:
-                        logging.getLogger('Mail').info('Send email: %s' %
-                            (electronic_email.rec_name))
+                        logger.info('Send email: %s' % (electronic_email.rec_name))
                     else:
                         electronic_email.mailbox = draft_mailbox
                         electronic_email.save()
