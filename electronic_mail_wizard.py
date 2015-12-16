@@ -289,6 +289,7 @@ class GenerateTemplateEmail(Wizard):
         multi_lang = self.start.multi_lang
 
         electronic_emails = set()
+        activities = []
         for record in pool.get(template.model.model).browse(active_ids):
             values = {}
             values['message_id'] = self.start.message_id
@@ -344,8 +345,16 @@ class GenerateTemplateEmail(Wizard):
                 mailbox, context)
             if not electronic_email: # not configured mailbox
                 return
-            template.add_event(record, electronic_email) # add event
             electronic_emails.add(electronic_email)
+
+            activities = [{
+                'record': record,
+                'template': template,
+                'mail': electronic_email,
+                }]
+
+        if activities:
+            template.add_activities(activities)  # add activities
 
         Transaction().cursor.commit()
         if not self.start.queue:
