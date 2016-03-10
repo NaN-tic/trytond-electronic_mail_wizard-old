@@ -359,7 +359,7 @@ class GenerateTemplateEmail(Wizard):
         Transaction().cursor.commit()
         if not self.start.queue:
             electronic_email_ids = list({e.id for e in electronic_emails})
-            db_name = Transaction().cursor.dbname
+            db_name = Transaction().database.name
             context = Transaction().context
             thread1 = threading.Thread(target=self.render_and_send_thread,
                 args=(db_name, Transaction().user, template,
