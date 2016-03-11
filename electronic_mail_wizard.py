@@ -356,7 +356,7 @@ class GenerateTemplateEmail(Wizard):
         if activities:
             template.add_activities(activities)  # add activities
 
-        Transaction().cursor.commit()
+        Transaction().commit()
         if not self.start.queue:
             electronic_email_ids = list({e.id for e in electronic_emails})
             db_name = Transaction().database.name
@@ -387,4 +387,4 @@ class GenerateTemplateEmail(Wizard):
                         electronic_email.mailbox = draft_mailbox
                         electronic_email.save()
 
-            transaction.cursor.commit()
+            transaction.commit()
