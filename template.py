@@ -7,10 +7,10 @@ from trytond.pyson import Eval
 from trytond.transaction import Transaction
 
 __all__ = ['Template']
-__metaclass__ = PoolMeta
 
 
 class Template:
+    __metaclass__ = PoolMeta
     __name__ = 'electronic.mail.template'
     create_action = fields.Boolean('Create Action', help='If set a wizard '
         'action will be created in the related model in order to send the '
